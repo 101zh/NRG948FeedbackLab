@@ -46,12 +46,14 @@ public class Robot extends TimedRobot {
   // [your-code-goes-here]
 ```
 
-3. Create a variable for a motor controller, relative encoder, and gyro
+3. Create a variable for a motor controller, relative encoder, and gyro, and gyro angle
+    - The ID for the pigeon should be 2
+    - The ID for the SparkMax should be 1
 
 ```java
-  SparkMax neoMotorController = new SparkMax(3, MotorType.kBrushless);
+  SparkMax neoMotorController = new SparkMax(id, MotorType.kBrushless);
   RelativeEncoder neoMotorEncoder;
-  Pigeon2 gyro = new Pigeon2(1);
+  Pigeon2 gyro = new Pigeon2(id);
   StatusSignal<Angle> boardRotation;
 ```
 
@@ -59,7 +61,7 @@ public class Robot extends TimedRobot {
     - Note: this variable is our feedback system; we will cover how a PID controller works in the future.
 
 ```java
-    PIDController feedbackSystem = new PIDController(0.005, 0, 0);
+    PIDController feedbackSystem = new PIDController(0.001, 0, 0);
 ```
 
 5. Now go find the `Robot()` method for the `Robot` class (as shown below)
@@ -74,25 +76,29 @@ public Robot() {
 ```
 
 6. Inside the curly braces go ahead and configure the relative encoder and feedback system
+    - It's good to reset the gyro's angle and the motor encoder's angle to zero every time you deploy
+    - So ... find the methods on the `gyro` and the `neoMotorEncoder` that can set the angle/position to zero
 
 ```java
     boardRotation = gyro.getYaw();
     neoMotorEncoder = neoMotorController.getEncoder();
     feedbackSystem.setSetpoint(0.0); // The value the feedback system is trying to get to
-    feedbackSystem.setTolerance(0.75); // How many degrees off the system can be and still be fine
+    feedbackSystem.setTolerance(0.05); // How many degrees off the system can be and still be fine
     feedbackSystem.enableContinuousInput(0, 360); // Allows it to wrap angles around from 0 degrees to 360 degrees
+
+    // [insert-code-here-to-set-gyro-and-encoder-angle-to-zero]
 ```
 
 ## Calculating the Motor Movement
 
 1. Go to the `robotPeriodic()` method
 2. Now to able to seek to a specific angle, we need to know the rotation of the board and angle of the motor
-3. So you need to find out how to get the motor angle off the `RelativeEncoder`
-    - Note: I already gave you how to find the board's rotation!
+3. Neither the gyro or the encoder will wrap it's rotation value back around to 0. This means that when the gyro and motor turns past 360 degrees, the angle returned will just keep increasing. So figure out a way to remove excess rotations.
+    - Note: [hints for motor angle](hints/EncoderHints.md) and [hints for board rotation](hints/GyroHints.md)
 
 ```java
     double currentMotorAngle = // [insert-method-here]
-    double currentBoardRotation = boardRotation.refresh().getValueAsDouble() % 360;
+    double currentBoardRotation = // [insert-method-here]
 ```
 
 4. Now, we need to calculate the speed the motor should go at
