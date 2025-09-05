@@ -32,17 +32,13 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
-  // AHRS NavX = new AHRS(NavXComType.kI2C);
-  // TalonFX krakenMotorController = new TalonFX(0);
-  // StatusSignal<Angle> motorAngle;
   
-  SparkMax neoMotorController = new SparkMax(3, MotorType.kBrushless);
+  SparkMax neoMotorController = new SparkMax(1, MotorType.kBrushless);
   RelativeEncoder neoMotorEncoder;
-  Pigeon2 gyro = new Pigeon2(1);
+  Pigeon2 gyro = new Pigeon2(2);
   StatusSignal<Angle> boardRotation;
   
-  PIDController feedbackSystem = new PIDController(0.005, 0, 0);
+  PIDController feedbackSystem = new PIDController(0.001, 0, 0);
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -54,13 +50,13 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    // motorAngle = krakenMotorController.getPosition();
-
     boardRotation = gyro.getYaw();
     neoMotorEncoder = neoMotorController.getEncoder();
-    feedbackSystem.setSetpoint(0.5);
-    feedbackSystem.setTolerance(0.75);
+    feedbackSystem.setSetpoint(0.0);
+    feedbackSystem.setTolerance(0.05);
     feedbackSystem.enableContinuousInput(0, 360);
+    gyro.setYaw(0.0);
+    neoMotorEncoder.setPosition(0.0);
   }
 
   /**
@@ -75,10 +71,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    // double currentMotorAngle = motorAngle.refresh().getValueAsDouble();
-    // double currentBoardRotation = NavX.getAngle() % 360;
-    
-    double currentMotorAngle = neoMotorEncoder.getPosition();
+    double currentMotorAngle = (neoMotorEncoder.getPosition() * 360) % 360;
     double currentBoardRotation = boardRotation.refresh().getValueAsDouble() % 360;
 
     double speed = feedbackSystem.calculate(currentMotorAngle, -currentBoardRotation);
