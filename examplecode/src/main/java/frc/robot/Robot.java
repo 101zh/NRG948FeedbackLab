@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
 
     System.out.println("Board: " + currentBoardRotation + "; Motor: " + currentMotorAngle + "; Speed: " + speed);
 
-    neoMotorController.set(MathUtil.clamp(speed, -0.5, 0.5));
+    neoMotorController.set(MathUtil.clamp(speed, -0.1, 0.1));
   }
 
   /**

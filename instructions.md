@@ -115,8 +115,8 @@ public Robot() {
 5. Lastly, set the speed of the motor
 
 ```java
-    neoMotorController.set(MathUtil.clamp(speed, -0.5, 0.5));
-    // The speed is limited to -0.5-0.5 because we don't want the motor moving really fast
+    neoMotorController.set(MathUtil.clamp(speed, -0.1, 0.1));
+    // The speed is limited to -0.1 to 0.1 because we don't want the motor moving really fast
 ```
 
 6. Now you're done, build your code and test!
