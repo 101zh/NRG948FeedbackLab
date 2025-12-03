@@ -27,7 +27,7 @@ Get the angle off the `gyroAngle` by getting the value **as a double**.
 <details>
     <summary>Click to reveal hint!</summary>
 
-Remember to refresh the gyro angle variable, otherwise you aren't getting the most recent result.
+Remember to **refresh** the gyro angle variable, otherwise you aren't getting the most recent result.
 
 </details>
 
