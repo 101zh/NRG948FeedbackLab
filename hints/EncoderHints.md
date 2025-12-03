@@ -29,6 +29,13 @@ Get the "position" off the relative encoder.
 
 Getting the position from the motor actually gives you rotations. How do you convert rotations to degrees?
 
+<details>
+    <summary>Answer</summary>
+
+Multiply the position value you get in rotations by `360` will convert from rotations to degrees
+
+</details>
+
 </details>
 
 ## Hint 4
