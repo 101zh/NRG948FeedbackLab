@@ -1,14 +1,14 @@
-# Hint for getting the angle off gyro
+# Hint for getting the angle off gyro for board rotation
 
 ## Hint 1
 
 <details>
     <summary>Click to reveal hint!</summary>
 
-Get the angle off the variable below.
+Get the angle off this variable you created before for board rotation.
 
 ```java
-StatusSignal<Angle> boardRotation;
+StatusSignal<Angle> gyroAngle;
 ```
 
 </details>
@@ -18,7 +18,7 @@ StatusSignal<Angle> boardRotation;
 <details>
     <summary>Click to reveal hint!</summary>
 
-Get the angle off the `boardRotation` by getting the value as a double.
+Get the angle off the `gyroAngle` by getting the value **as a double**.
 
 </details>
 
@@ -27,7 +27,7 @@ Get the angle off the `boardRotation` by getting the value as a double.
 <details>
     <summary>Click to reveal hint!</summary>
 
-Remember to refresh the variable, otherwise you aren't getting the most recent result.
+Remember to refresh the gyro angle variable, otherwise you aren't getting the most recent result.
 
 </details>
 
