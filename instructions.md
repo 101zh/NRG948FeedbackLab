@@ -1,12 +1,18 @@
 # Sensors and Feedback Lab
 
-In this lab you will configure a gear on a motor to always face the direction that it was intialized.
+In this lab you will configure a motor to always face the direction that it was intialized.
+
+You will use...
+- A Neo Motor (`SparkMax` class)
+- A Pigeon Gyro (`Pigeon2` class)
+
+After this lab, you should be able to deploy this to the motor board and see your code work!
 
 ## Diagram
 
 - Whenever the board turns clockwise, the motor should turn the same amount counterclockwise
     - And vice-versa
-- This way the gear on the motor will always face the way it was initialized
+- This way the motor will always face the way it was initialized
 
 ![diagram of the motor board](images/MotorBoardDiagram.png)
 
@@ -34,34 +40,23 @@ In this lab you will configure a gear on a motor to always face the direction th
 ## Creating the variables for the Encoder and Gyro
 
 1. Go to `Robot.java` which is under `src/main/java/frc/robot`
-2. Go to the right place as shown by the below code block
+2. Now we're going to create variables:
+    - Create an initialize a motor controller variable. Type: `SparkMax`
+        - ID: `1`
+    - Create a relative encoder variable. Type: `RelativeEncoder`
+    - Create and initialize a gyro variable. Type: `Pigeon2`
+        - ID: `2`
+    - Create a gyro angle variable (which tracks how much the board has rotated). Type: `StatusSignal<Angle>`
 
-```java
-public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
-  // [your-code-goes-here]
-```
-
-3. Create a variable for a motor controller, relative encoder, and gyro, and gyro angle
-    - The ID for the pigeon should be 2
-    - The ID for the SparkMax should be 1
-
-```java
-  SparkMax neoMotorController = new SparkMax(id, MotorType.kBrushless);
-  RelativeEncoder neoMotorEncoder;
-  Pigeon2 gyro = new Pigeon2(id);
-  StatusSignal<Angle> boardRotation;
-```
+3. By the way:
+    - The ID for the gyro should be `2`
+    - The ID for the motor controller should be `1`
 
 4. Now right below that, create another variable for our feedback system
     - Note: this variable is our feedback system; we will cover how a PID controller works in the future.
 
 ```java
-    PIDController feedbackSystem = new PIDController(0.001, 0, 0);
+    PIDController feedbackSystem = new PIDController(0.0001, 0, 0);
 ```
 
 5. Now go find the `Robot()` method for the `Robot` class (as shown below)
@@ -76,24 +71,27 @@ public Robot() {
 ```
 
 6. Inside the curly braces go ahead and configure the relative encoder and feedback system
-    - It's good to reset the gyro's angle and the motor encoder's angle to zero every time you deploy
-    - So ... find the methods on the `gyro` and the `neoMotorEncoder` that can set the angle/position to zero
+    - First, we're configuring the feedback system (code is provided); just read what it does
+    - Next, we're going to initialize the gyro angle variable and relative encoder variable
+        - Gyro angle variable should be initialized to `gyro.getYaw()`
+        - The value of the motor encoder variable can be found on one of the motor controller's methods
+    - After initializing values, reset the gyro's angle and the motor encoder's angle to zero
 
 ```java
-    boardRotation = gyro.getYaw();
-    neoMotorEncoder = neoMotorController.getEncoder();
     feedbackSystem.setSetpoint(0.0); // The value the feedback system is trying to get to
     feedbackSystem.setTolerance(0.05); // How many degrees off the system can be and still be fine
     feedbackSystem.enableContinuousInput(0, 360); // Allows it to wrap angles around from 0 degrees to 360 degrees
+
+    // [insert-code-here-to-initialize-gyro-and-encoder]
 
     // [insert-code-here-to-set-gyro-and-encoder-angle-to-zero]
 ```
 
 ## Calculating the Motor Movement
 
-1. Go to the `robotPeriodic()` method
+1. Go to the `robotPeriodic()` method, which is run every 60ms
 2. Now to able to seek to a specific angle, we need to know the rotation of the board and angle of the motor
-3. Neither the gyro or the encoder will wrap it's rotation value back around to 0. This means that when the gyro and motor turns past 360 degrees, the angle returned will just keep increasing. So figure out a way to remove excess rotations.
+3. So, let's find the values from the relative encoder and gyro **in degrees**, **wrapped to 0º to 360º**
     - Note: [hints for motor angle](hints/EncoderHints.md) and [hints for board rotation](hints/GyroHints.md)
 
 ```java
@@ -101,22 +99,17 @@ public Robot() {
     double currentBoardRotation = // [insert-method-here]
 ```
 
-4. Now, we need to calculate the speed the motor should go at
+4. Calculate the speed the motor should go at, using the feedback system as shown below
+    - Write an if statement that sets the speed to `0.0` if the feedbackSystem is at it's goal angle (`atSetpoint()` method)
 
 ```java
     double speed = feedbackSystem.calculate(currentMotorAngle, -currentBoardRotation);
     // Tells the feedback system the current motor angle and then tells it rotate the opposite amount of the board's rotation
 
-    if (feedbackSystem.atSetpoint()) { // If already at the goal angle, then don't move the motor
-      speed = 0.0;
-    }
+    // Insert code for setting the speed to zero if at goal angle
 ```
 
-5. Lastly, set the speed of the motor
-
-```java
-    neoMotorController.set(MathUtil.clamp(speed, -0.1, 0.1));
-    // The speed is limited to -0.1 to 0.1 because we don't want the motor moving really fast
-```
+5. Lastly, limit the speed of the motor from `-0.025 to 0.025` using MathUtil.clamp()
+    - Then, **set** that as the speed of the motor controller, using a method on the motor controller
 
 6. Now you're done, build your code and test!

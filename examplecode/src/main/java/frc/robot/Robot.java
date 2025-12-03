@@ -6,12 +6,9 @@ package frc.robot;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -38,7 +35,7 @@ public class Robot extends TimedRobot {
   Pigeon2 gyro = new Pigeon2(2);
   StatusSignal<Angle> boardRotation;
   
-  PIDController feedbackSystem = new PIDController(0.001, 0, 0);
+  PIDController feedbackSystem = new PIDController(0.0001, 0, 0);
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -50,11 +47,13 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    boardRotation = gyro.getYaw();
-    neoMotorEncoder = neoMotorController.getEncoder();
     feedbackSystem.setSetpoint(0.0);
     feedbackSystem.setTolerance(0.05);
     feedbackSystem.enableContinuousInput(0, 360);
+
+    neoMotorEncoder = neoMotorController.getEncoder();
+    boardRotation = gyro.getYaw();
+
     gyro.setYaw(0.0);
     neoMotorEncoder.setPosition(0.0);
   }
@@ -81,7 +80,7 @@ public class Robot extends TimedRobot {
 
     System.out.println("Board: " + currentBoardRotation + "; Motor: " + currentMotorAngle + "; Speed: " + speed);
 
-    neoMotorController.set(MathUtil.clamp(speed, -0.1, 0.1));
+    neoMotorController.set(MathUtil.clamp(speed, -0.025, 0.025));
   }
 
   /**

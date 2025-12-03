@@ -30,3 +30,22 @@ Get the angle off the `boardRotation` by getting the value as a double.
 Remember to refresh the variable, otherwise you aren't getting the most recent result.
 
 </details>
+
+## Hint 4
+
+<details>
+    <summary>Click to reveal hint!</summary>
+
+The gyro doesn't wrap its values from 0º to 360º. How do you remove extra 360 degrees?
+
+
+<details>
+    <summary>Answer</summary>
+
+Using `%`, will help you.
+
+For example `361 % 360 = 1`, removing the extra 360º
+
+</details>
+
+</details>
