@@ -41,7 +41,7 @@ After this lab, you should be able to deploy this to the motor board and see you
 
 1. Go to `Robot.java` which is under `src/main/java/frc/robot`
 2. Now we're going to create variables:
-    - Create an initialize a motor controller variable. Type: `SparkMax`
+    - Create and initialize a motor controller variable. Type: `SparkMax`
         - ID: `1`
     - Create a relative encoder variable. Type: `RelativeEncoder`
     - Create and initialize a gyro variable. Type: `Pigeon2`
@@ -52,11 +52,11 @@ After this lab, you should be able to deploy this to the motor board and see you
     - The ID for the gyro should be `2`
     - The ID for the motor controller should be `1`
 
-4. Now right below that, create another variable for our feedback system
-    - Note: this variable is our feedback system; we will cover how a PID controller works in the future.
+4. As shown below, create another variable for our feedback system 
 
 ```java
     PIDController feedbackSystem = new PIDController(0.0001, 0, 0);
+    // Note: This variable is our feedback system; we will cover how a PID controller works in the future.
 ```
 
 5. Now go find the `Robot()` method for the `Robot` class (as shown below)
@@ -75,7 +75,7 @@ public Robot() {
     - Next, we're going to initialize the gyro angle variable and relative encoder variable
         - Gyro angle variable should be initialized to `gyro.getYaw()`
         - The value of the motor encoder variable can be found on one of the motor controller's methods
-    - After initializing values, reset the gyro's angle and the motor encoder's angle to zero
+    - After initializing values, set the gyro and the motor encoder to zero degrees
 
 ```java
     feedbackSystem.setSetpoint(0.0); // The value the feedback system is trying to get to
